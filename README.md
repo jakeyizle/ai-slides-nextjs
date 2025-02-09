@@ -2,9 +2,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-Copy .env.template to .env.local
-Setup the LLM - See [LLM_SETUP.md](./LLM_SETUP.md)
-- Note that locally it is slow AF
+Copy .env.template to .env.local  
+Setup the LLM - See [LLM_SETUP.md](./LLM_SETUP.md)  
+- Note that locally it is slow AF  
 
 Run the development server:
 
