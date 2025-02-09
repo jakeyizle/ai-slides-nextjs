@@ -15,7 +15,6 @@ export default function Presentation() {
     useEffect(() => {
         async function fetchSlides() {
             try {
-                console.log('start')
                 const response = await fetch('/api/slides/generate', {
                     method: 'POST',
                     headers: {
@@ -29,9 +28,7 @@ export default function Presentation() {
                 if (!response.ok) {
                     throw new Error('Failed to fetch slides');
                 }
-                console.log('end')
                 const data = await response.json();
-                console.log(data.content)
                 setSlideContent(data.content);
             } catch (error) {
                 console.error('Error fetching slides:', error);
