@@ -10,16 +10,24 @@ export const SlidesContainer = ({ slideContent }: { slideContent: string }) => {
     const deckRef = useRef<Reveal.Api | null>(null);
 
     useEffect(() => {
-        if (deckRef.current) return;
+        if (!deckDivRef.current) return;        
+        const resizeObserver = new ResizeObserver(() => {
+            if (deckRef.current) {
+                deckRef.current.layout();
+            }
+        });
 
-        deckRef.current = new Reveal(deckDivRef.current!, {
+        resizeObserver.observe(deckDivRef.current);
+
+        deckRef.current = new Reveal(deckDivRef.current, {
             transition: "slide",
-            embedded: true
+            embedded: true,
         });
 
-        deckRef.current.initialize({ plugins: [Markdown] }).then(() => {
-        });
+        deckRef.current.initialize({ plugins: [Markdown] });
+
         return () => {
+            resizeObserver.disconnect();
             try {
                 if (deckRef.current) {
                     deckRef.current.destroy();
@@ -31,13 +39,13 @@ export const SlidesContainer = ({ slideContent }: { slideContent: string }) => {
         };
     }, []);
     return (
-        <div className="reveal" ref={deckDivRef}>
-            <div className="slides">
-                <section data-markdown="">
-                    <textarea data-template value={slideContent} readOnly>
-                    </textarea>
-                </section>
+            <div className="reveal" ref={deckDivRef}>
+                <div className="slides">
+                    <section data-markdown="">
+                        <textarea data-template value={slideContent} readOnly>
+                        </textarea>
+                    </section>
+                </div>
             </div>
-        </div>
     )
 }

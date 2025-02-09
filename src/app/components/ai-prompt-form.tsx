@@ -18,21 +18,18 @@ export function AIPromptForm({onSubmit}: AIPromptFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="prompt" className="text-lg font-semibold">
-          Enter your slideshow prompt:
-        </Label>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <div className="flex-1">
         <Textarea
           id="prompt"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          placeholder="E.g., The history of space exploration"
-          className="mt-2 h-40"
+          placeholder="Enter your slideshow topic..."
+          className="resize-none h-24 text-sm"
         />
       </div>
-      <Button type="submit" className="w-full">
-        Generate Slideshow
+      <Button type="submit" size="sm" className="w-full">
+        Generate
       </Button>
     </form>
   )

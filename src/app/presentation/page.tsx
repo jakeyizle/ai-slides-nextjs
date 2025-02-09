@@ -22,16 +22,21 @@ export default function Page() {
     }
 
     return (
-        <div className="space-y-8">
-            <h2 className="text-3xl font-bold text-center mb-8">Create Your AI-Powered Slideshow</h2>
-            <div className="flex flex-col md:flex-row gap-8">
-                <div className="w-full md:w-1/3">
-                    <AIPromptForm onSubmit={(p) => handlePromptSubmit(p)} />
-                </div>
-                <div className="w-full md:w-2/3">
-                    {isRequesting && <p className="text-center">Generating slides...</p>}
-                    {slideContent && <div className="overflow-y-auto h-[calc(100vh-16rem)] border border-gray-300 rounded-md p-4"><SlidesContainer slideContent={slideContent} /></div>}
-                </div>
+        <div className="flex h-[calc(100vh-8rem)]">
+            <div className="w-[300px] min-w-[300px] border-r border-gray-200 p-4 overflow-y-auto bg-gray-50">
+                <AIPromptForm onSubmit={(p) => handlePromptSubmit(p)} />
+                {isRequesting && <p className="text-center mt-4">Generating slides...</p>}
+            </div>
+            <div className="flex-1 p-6">
+                {slideContent ? (
+                    <div className="h-full w-full overflow-hidden border border-gray-300 rounded-lg">
+                        <SlidesContainer slideContent={slideContent} />
+                    </div>
+                ) : (
+                    <div className="h-full w-full flex items-center justify-center text-gray-400">
+                        Enter a prompt to generate slides
+                    </div>
+                )}
             </div>
         </div>
     )
