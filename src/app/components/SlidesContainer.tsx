@@ -1,10 +1,11 @@
 "use client"
-import { useEffect, useRef, useState } from 'react';
+import "reveal.js/dist/reveal.css";
+import "reveal.js/dist/theme/black.css";
+import { useEffect, useRef } from 'react';
 import Reveal from "reveal.js";
 import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
 
 export const SlidesContainer = ({ slideContent }: { slideContent: string }) => {
-
     const deckDivRef = useRef<HTMLDivElement>(null);
     const deckRef = useRef<Reveal.Api | null>(null);
 
@@ -13,6 +14,7 @@ export const SlidesContainer = ({ slideContent }: { slideContent: string }) => {
 
         deckRef.current = new Reveal(deckDivRef.current!, {
             transition: "slide",
+            embedded: true
         });
 
         deckRef.current.initialize({ plugins: [Markdown] }).then(() => {
