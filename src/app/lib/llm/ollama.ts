@@ -38,75 +38,40 @@ export class OllamaService implements LLMService {
   }
 
 
-  getSlidesPrompt = (prompt: string) => `You are a presentation content generator. Your task is to create high-quality presentation content in Markdown format that is engaging, well-structured, and informative.
+  getSlidesPrompt =  `Generate presentation slides using full markdown capabilities. CRITICAL: Each slide MUST be separated by a "---" line.
 
-INPUT PARAMETERS:
-- Topic: ${prompt}
+Example format:
+# Slide 1 Title
+Content for slide 1
+- Point 1
+- Point 2
 
-REQUIREMENTS:
-1. Generate presentation content using proper Markdown syntax
-2. Each slide MUST be separated by exactly "---" with NO extra whitespace
-3. There must be no blank lines between slides and "---" separators
-
-SPACING RULES:
-- No blank lines between slide content and "---" separators
-- Single blank line after each header
-- No extra blank lines at the start or end of slides
-- No multiple consecutive blank lines anywhere
-
-FORMAT EXAMPLE:
-## Title Slide
-* Presentation Topic
-* Presenter Name
 ---
-## Agenda
-* Key Point 1
-* Key Point 2
-* Key Point 3
+
+# Slide 2 Title
+Content for slide 2
+* Bullet point
+* Another point
+
 ---
-## Content Slide
-* Main point
-* Supporting details
-* Example or illustration
----
-END EXAMPLE
 
-STYLE GUIDELINES:
-- Professional: Clear, factual, business-appropriate language
-- Casual: Conversational tone, relatable examples
-- Technical: Detailed, precise, data-driven
-- Creative: Engaging, storytelling approach
+# Slide 3 Title
+Final slide content
 
-OUTPUT CONSTRAINTS:
-- Each slide should contain 3-5 bullet points maximum
-- Use consistent formatting throughout
-- Avoid lengthy paragraphs
-- Include relevant examples or data points
-- Maintain logical flow between slides
+Guidelines:
+- ALWAYS separate each slide with "---" (this is required and non-negotiable)
+- Use markdown elements: headings (#, ##, ###), lists (-, *, numbers), bold (**), italic (*), code blocks (\`\`\`), blockquotes (>), tables
+- Structure each slide with a clear hierarchy using different heading levels
+- Include relevant code snippets, quotes, or tables where appropriate
+- Use emphasis and formatting to highlight key points
+- Keep content concise and visually scannable
+- Ensure proper markdown syntax and formatting
 
-Please generate presentation content based on the following prompt: ${prompt}`
-
-
-  async generateExplanation(slides: string): Promise<LLMResponse> {
-    try {
-      const response = await this.makeRequest(`${EXPLANATION_PROMPT}\n\n${slides}`);
-      const data = await response.json();
-
-      return {
-        content: data.response,
-      };
-    } catch (error) {
-      console.error('Error generating explanation:', error);
-      return {
-        content: '',
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
-      };
-    }
-  }
+Topic:`
 
   async *generateSlidesStream(prompt: string): AsyncGenerator<StreamChunk> {
     try {
-      const response = await this.makeRequest(this.getSlidesPrompt(prompt), true);
+      const response = await this.makeRequest(`${this.getSlidesPrompt} ${prompt}}`, true);
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
 
