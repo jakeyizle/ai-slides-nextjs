@@ -45,7 +45,7 @@ INPUT PARAMETERS:
 
 REQUIREMENTS:
 1. Generate presentation content using proper Markdown syntax
-2. Each slide MUST be separated by exactly "---" with NO extra blank lines before or after
+2. Each slide MUST be separated by exactly "---" with NO extra whitespace
 3. There must be no blank lines between slides and "---" separators
 
 SPACING RULES:
