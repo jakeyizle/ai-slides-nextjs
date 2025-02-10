@@ -1,22 +1,53 @@
 'use server'
 
 import { createLLMService } from '@/app/lib/llm/factory';
+import { StreamChunk } from '../lib/llm/types';
 
-export async function generateSlides(prompt: string) {
-  try {
-    if (!prompt) {
-      throw new Error('Prompt is required');
+// For streaming responses
+export type StreamResponse = {
+  chunks: ReadableStream<StreamChunk>;
+  hasStreaming: boolean;
+};
+
+export async function generateSlidesStream(prompt: string): Promise<StreamResponse> {
+  const llm = createLLMService();
+    const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        for await (const chunk of llm.generateSlidesStream(prompt)) {
+          controller.enqueue(chunk);
+          if (chunk.done) {
+            controller.close();
+            break;
+          }
+        }
+      } catch (error) {
+        controller.error(error);
+      }
     }
+  });
 
-    const llm = createLLMService();
-    const result = await llm.generateSlides(prompt);
+  return { chunks: stream, hasStreaming: true };
+}
 
-    if (result.error) {
-      throw new Error(result.error);
+export async function generateExplanationStream(slides: string): Promise<StreamResponse> {
+  const llm = createLLMService();
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        for await (const chunk of llm.generateExplanationStream(slides)) {
+          controller.enqueue(chunk);
+          if (chunk.done) {
+            controller.close();
+            break;
+          }
+        }
+      } catch (error) {
+        controller.error(error);
+      }
     }
-    return { content: result.content };
-  } catch (error) {
-    console.error('Error in slides generation:', error);
-    throw new Error('Failed to generate slides');
-  }
+  });
+
+  return { chunks: stream, hasStreaming: true };
 }

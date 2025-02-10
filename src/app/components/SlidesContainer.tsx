@@ -24,7 +24,18 @@ export const SlidesContainer = ({ slideContent }: { slideContent: string }) => {
             embedded: true,
         });
 
-        deckRef.current.initialize({ plugins: [Markdown] });
+        deckRef.current.initialize({ plugins: [Markdown] }).then(() => {
+            const handleKeyDown = (event: KeyboardEvent) => {
+                if (event.key === "f") {
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    } else {
+                        deckDivRef.current?.requestFullscreen();
+                    }
+                }
+            };
+            deckDivRef.current?.addEventListener("keydown", handleKeyDown);
+        });
 
         return () => {
             resizeObserver.disconnect();
@@ -39,7 +50,8 @@ export const SlidesContainer = ({ slideContent }: { slideContent: string }) => {
         };
     }, []);
     return (
-            <div className="reveal" ref={deckDivRef}>
+        <div className="h-[calc(100%-40px)] w-full">
+            <div className="reveal h-full" ref={deckDivRef}>
                 <div className="slides">
                     <section data-markdown="">
                         <textarea data-template value={slideContent} readOnly>
@@ -47,5 +59,6 @@ export const SlidesContainer = ({ slideContent }: { slideContent: string }) => {
                     </section>
                 </div>
             </div>
+        </div>
     )
 }

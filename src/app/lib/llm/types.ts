@@ -3,11 +3,17 @@ export interface LLMConfig {
   model: string;
 }
 
+export type StreamChunk = {
+  content: string;
+  done: boolean;
+}
+
 export interface LLMResponse {
   content: string;
   error?: string;
 }
 
 export interface LLMService {
-  generateSlides(prompt: string): Promise<LLMResponse>;
+  generateSlidesStream(prompt: string): AsyncGenerator<StreamChunk>;
+  generateExplanationStream(slides: string): AsyncGenerator<StreamChunk>;
 }
