@@ -28,7 +28,7 @@ export function PresentationHeader({ activeTab, onTabChange }: PresentationHeade
             >
                 Markdown
             </button>
-            <button
+            {/* <button
                 className={`px-4 py-2 text-sm ${
                     activeTab === 'notes'
                         ? 'border-b-2 border-blue-500 text-blue-600'
@@ -37,7 +37,7 @@ export function PresentationHeader({ activeTab, onTabChange }: PresentationHeade
                 onClick={() => onTabChange('notes')}
             >
                 Presenter Notes
-            </button>
+            </button> */}
         </div>
     )
 }

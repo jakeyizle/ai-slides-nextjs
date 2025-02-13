@@ -1,4 +1,5 @@
-import { LLMConfig, LLMResponse, LLMService, StreamChunk } from './types';
+import { GENERATE_SLIDES_PROMPT, MARKDOWN_SYSTEM_PROMPT } from './prompts';
+import { LLMConfig, LLMService, StreamChunk } from './types';
 
 const EXPLANATION_PROMPT = `Analyze these presentation slides and provide a presenter's guide:
 
@@ -17,7 +18,7 @@ export class OllamaService implements LLMService {
     this.config = config;
   }
 
-  private async makeRequest(prompt: string, stream: boolean = false) {
+  private async makeRequest(prompt: string, stream: boolean = false, system: string = '') {
     const response = await fetch(`${this.config.endpoint}/api/generate`, {
       method: 'POST',
       headers: {
@@ -27,6 +28,7 @@ export class OllamaService implements LLMService {
         model: this.config.model,
         prompt,
         stream,
+        system,
       }),
     });
 
@@ -37,41 +39,9 @@ export class OllamaService implements LLMService {
     return response;
   }
 
-
-  getSlidesPrompt =  `Generate presentation slides using full markdown capabilities. CRITICAL: Each slide MUST be separated by a "---" line.
-
-Example format:
-# Slide 1 Title
-Content for slide 1
-- Point 1
-- Point 2
-
----
-
-# Slide 2 Title
-Content for slide 2
-* Bullet point
-* Another point
-
----
-
-# Slide 3 Title
-Final slide content
-
-Guidelines:
-- ALWAYS separate each slide with "---" (this is required and non-negotiable)
-- Use markdown elements: headings (#, ##, ###), lists (-, *, numbers), bold (**), italic (*), code blocks (\`\`\`), blockquotes (>), tables
-- Structure each slide with a clear hierarchy using different heading levels
-- Include relevant code snippets, quotes, or tables where appropriate
-- Use emphasis and formatting to highlight key points
-- Keep content concise and visually scannable
-- Ensure proper markdown syntax and formatting
-
-Topic:`
-
   async *generateSlidesStream(prompt: string): AsyncGenerator<StreamChunk> {
     try {
-      const response = await this.makeRequest(`${this.getSlidesPrompt} ${prompt}}`, true);
+      const response = await this.makeRequest(`${GENERATE_SLIDES_PROMPT} ${prompt}}`, true, MARKDOWN_SYSTEM_PROMPT);
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
 

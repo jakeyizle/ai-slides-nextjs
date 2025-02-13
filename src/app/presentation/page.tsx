@@ -3,6 +3,7 @@ import { useState } from "react";
 import { generateSlidesStream, generateExplanationStream } from "../actions/generateSlides";
 import { ChatInterface } from "../components/ChatInterface";
 import { PresentationDisplay } from "../components/PresentationDisplay";
+import { processStreamResponse } from "./processStream";
 
 export default function Page() {
     const [slideContent, setSlideContent] = useState('');
@@ -35,8 +36,9 @@ export default function Page() {
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
-                    
+
                     accumulatedSlides += value.content;
+                    accumulatedSlides = processStreamResponse(accumulatedSlides);
                     setSlideContent(accumulatedSlides);
                 }
             } finally {
@@ -54,8 +56,9 @@ export default function Page() {
                 while (true) {
                     const { done, value } = await explanationReader.read();
                     if (done) break;
-                    
+
                     accumulatedExplanation += value.content;
+
                     setExplanation(accumulatedExplanation);
                 }
             } finally {
@@ -83,7 +86,7 @@ export default function Page() {
     return (
         <div className="flex h-[calc(100vh-8rem)]">
             <div className="w-[300px] min-w-[300px] border-r border-gray-200 p-4 overflow-y-auto bg-gray-50">
-                <ChatInterface 
+                <ChatInterface
                     onSubmit={handlePromptSubmit}
                     isLoading={isLoading}
                     error={error}
@@ -92,7 +95,7 @@ export default function Page() {
                 />
             </div>
             <div className="flex-1 p-6">
-                <PresentationDisplay 
+                <PresentationDisplay
                     slideContent={slideContent}
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
